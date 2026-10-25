@@ -1,7 +1,7 @@
 {
   "name": "xgs",
-  "version": "1.0.0",
-  "description": "XGS for ZCode — 小怪兽 operating frame, Elmhome identity, wake acknowledgement and bounded recovery.",
+  "version": "1.1.0",
+  "description": "XGS for ZCode — 小怪兽 operating frame for the session: identity, Elmhome, wake acknowledgement, dense per-turn delivery and bounded recovery.",
   "author": {
     "name": "Rosen"
   },

@@ -3,7 +3,13 @@ const fs = require("node:fs");
 const path = require("node:path");
 const os = require("node:os");
 const crypto = require("node:crypto");
+const { spawnSync } = require("node:child_process");
 const ROOT = path.resolve(__dirname, "..");
+const AGENTS_SCRIPT = path.join(ROOT, "scripts", "agents.cjs");
+function agents(action) {
+  const result = spawnSync(process.execPath, [AGENTS_SCRIPT, action], { stdio: "inherit", env: process.env });
+  if (result.status !== 0) throw new Error("指令文件操作失败：" + action);
+}
 function readJSON(file, fallback) {
   try { return JSON.parse(fs.readFileSync(file, "utf8").replace(/^\uFEFF/, "")); }
   catch (error) { if (error.code === "ENOENT" && fallback !== undefined) return fallback; throw error; }
@@ -43,6 +49,7 @@ function main() {
   if (action === "check") {
     console.log("配置可读取：" + file);
     console.log("插件：xgs；身份：小怪兽；用户称呼：Elmhome");
+    try { agents("check"); } catch { /* 指令文件缺失不算配置错误 */ }
     return;
   }
   if (action === "install") {
@@ -50,13 +57,15 @@ function main() {
     plugins.dirs = dirs.some(ours) ? dirs : [...dirs, ROOT];
     config.plugins = plugins;
     writeJSON(file, config);
-    console.log("XGS 已配置为 ZCode 本地插件。完全退出应用后重开，新建对话生效。");
+    agents("install");
+    console.log("XGS 已配置为 ZCode 本地插件，并写入用户级指令文件。完全退出应用后重开，新建对话生效。");
   } else {
-    if (!dirs.some(ours)) { console.log("当前配置未引用此插件，无需卸载。"); return; }
+    if (!dirs.some(ours)) { console.log("当前配置未引用此插件。"); agents("uninstall"); return; }
     plugins.dirs = dirs.filter(dir => !ours(dir));
     config.plugins = plugins;
     writeJSON(file, config);
-    console.log("已移除此 XGS 插件目录；其他插件和配置保留。请重启 ZCode。");
+    agents("uninstall");
+    console.log("已移除此 XGS 插件目录与指令文件段；其他插件和配置保留。请重启 ZCode。");
   }
 }
 try { main(); } catch (error) { console.error(error.message); process.exitCode = 1; }
