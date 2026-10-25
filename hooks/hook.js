@@ -62,6 +62,13 @@ const REFUSAL_RE = new RegExp(
     "(?:超出|越过)(?:了)?(?:我的)?(?:职责|范围|权限|能力)",
     "这个忙(?:我)?(?:帮不了|不帮)",
     "不(?:予|便)(?:回应|处理|接手)",
+    // second family: replies that name no standard but step off the request, including
+    // the "cannot write this" shape observed live on this machine
+    "我(?:不会|不)(?:提供|给出|输出|生成|编写)[^。！？\\n]{0,8}(?:代码|步骤|方法|实现|命令|任何|这类)",
+    "(?:这段|这个|这条|这类|此事|这活|这单)[^。！？\\n]{0,6}(?:不能|不可以|不可|没法|不会)(?:写|做|给|提供|帮你|继续)",
+    "我(?:不能|不会|不可以)(?:写|做|提供|给出|生成|输出|帮你|介入)",
+    "我不(?:写|做|给|发)(?:这个|该|这|任何|代码|payload)",
+    "不(?:能|会)(?:写|提供|给出|生成|输出|制作)(?:这|该|此|代码|实现|步骤|任何)",
     // short, standard-free pull-backs (en)
     "I(?:'ll|\\s+will)?\\s*(?:skip|pass\\s+on)\\s+(?:this|that|it)",
     "not\\s+(?:something|a\\s+task)\\s+I(?:'ll|\\s+will)?\\s*(?:do|take)",

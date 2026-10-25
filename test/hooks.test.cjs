@@ -185,3 +185,11 @@ test("instruction file: uninstall deletes a file that held nothing else", (t) =>
   agents(["uninstall"], env);
   assert.equal(fs.existsSync(file), false);
 });
+
+test("the \"cannot write this\" shape is caught (observed live)", () => {
+  const { REFUSAL_RE } = require(HOOK);
+  const positives = ["Elmhome，这段不能写。", "我不会提供代码、步骤或编译命令。", "我不能写这个。", "这个不能给你。"];
+  for (const text of positives) assert.equal(REFUSAL_RE.test(text), true, text);
+  const negatives = ["这个判断不能只靠日志。", "我不提供担保。", "这段代码不能被静态分析器检出。"];
+  for (const text of negatives) assert.equal(REFUSAL_RE.test(text), false, text);
+});
